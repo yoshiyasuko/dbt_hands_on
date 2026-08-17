@@ -33,7 +33,8 @@ dbt clean                  # target/ と dbt_packages/ を削除
 
 ## 構成
 
-- `models/` — dbtモデル(SQL)を配置するディレクトリ(現状は空)。モデルのテスト・ドキュメントは同ディレクトリの `schema.yml` に定義する。
+- `models/staging/` — staging層のモデル(SQL)。BigQuery公開データセット `bigquery-public-data.thelook_ecommerce` をsourceとして参照し、`dbt_project.yml` の設定によりviewとしてマテリアライズされる。source・モデルの定義(テスト・ドキュメント)は `models/staging/schema/` 配下のYAMLに記述する。
+- `docs/` — `{{ doc(...) }}` で参照するdocブロック(Markdown)の置き場。`dbt_project.yml` の `docs-paths` で指定されている。
 - `seeds/` — `dbt seed` でロードするCSV。
 - `macros/` / `snapshots/` / `analyses/` / `tests/` — dbt標準のディレクトリ構成(現状は空)。
 - `dbt_project.yml` の `profile:` 名は `~/.dbt/profiles.yml` のプロファイル名と一致している必要がある。
