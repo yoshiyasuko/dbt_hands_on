@@ -27,6 +27,9 @@ env/
 keyfile.json
 service-account*.json
 
+# Claude Code(個人用ローカル設定)
+.claude/settings.local.json
+
 # エディタ・IDE
 .vscode/
 .idea/
