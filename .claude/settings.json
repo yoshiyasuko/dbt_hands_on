@@ -1,0 +1,13 @@
+{
+  "extraKnownMarketplaces": {
+    "git-workflow-plugins": {
+      "source": {
+        "source": "github",
+        "repo": "yoshiyasuko/claude-code-git-workflow-plugins"
+      }
+    }
+  },
+  "enabledPlugins": {
+    "git-workflow@git-workflow-plugins": true
+  }
+}
