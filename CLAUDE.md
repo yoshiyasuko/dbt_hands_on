@@ -29,6 +29,7 @@ dbt clean                  # target/ と dbt_packages/ を削除
 
 - コミットは必ず `git-workflow:commit` スキルを利用すること。
 - PR作成は必ず `git-workflow:create-pr` スキルを利用すること。
+- コミット時は `.claude/skill-hooks.md` のpre-commitフックにより `update-docs` スキルが自動実行され、README.md / CLAUDE.md の更新要否がチェックされる。
 
 ## 構成
 
@@ -36,3 +37,4 @@ dbt clean                  # target/ と dbt_packages/ を削除
 - `seeds/` — `dbt seed` でロードするCSV。
 - `macros/` / `snapshots/` / `analyses/` / `tests/` — dbt標準のディレクトリ構成(現状は空)。
 - `dbt_project.yml` の `profile:` 名は `~/.dbt/profiles.yml` のプロファイル名と一致している必要がある。
+- `.agents/skills/` — プロジェクトスキルの本体(複数AIエージェント共用のuniversal形式)。`.claude/skills/` からsymlinkされており、Claude Codeはそちら経由で読み込む。利用可能なスキル: `update-docs`(README.md/CLAUDE.mdの更新判断・整合性検証)、`find-skills`(スキル検索)、`skill-creator`(スキル作成支援)。ルートの `skills-lock.json` はスキルのバージョン管理用ロックファイル。
