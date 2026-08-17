@@ -1,0 +1,36 @@
+# dbt
+target/
+dbt_packages/
+logs/
+.user.yml
+
+# dbt profiles(認証情報を含む場合があるためコミットしない)
+profiles.yml
+
+# DuckDB / SQLite などローカルDBファイル
+*.duckdb
+*.duckdb.wal
+*.db
+*.sqlite
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+env/
+.python-version
+
+# 環境変数・認証情報
+.env
+*.json.key
+keyfile.json
+service-account*.json
+
+# エディタ・IDE
+.vscode/
+.idea/
+*.swp
+
+# macOS
+.DS_Store
