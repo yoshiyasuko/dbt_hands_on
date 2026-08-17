@@ -1,0 +1,18 @@
+version: 2
+
+sources:
+  - name: thelook_ecommerce
+    database: bigquery-public-data
+    schema: thelook_ecommerce
+    description: '{{ doc("thelook_ecommerce") }}'
+    tables:
+      - name: orders
+        description: '注文データ'
+      - name: order_items
+        description: '注文詳細データ'
+
+models:
+  - name: stg__orders
+    description: '注文データ'
+  - name: stg__order_items
+    description: '注文詳細データ'
