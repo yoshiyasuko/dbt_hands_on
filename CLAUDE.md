@@ -18,7 +18,7 @@ source venv/bin/activate   # または venv/bin/dbt を直接実行
 
 dbt debug                  # 接続確認
 dbt run                    # 全モデルのビルド
-dbt run --select <model名>  # 単一モデルのみ実行(例: dbt run --select my_first_dbt_model)
+dbt run --select <model名>  # 単一モデルのみ実行
 dbt test                   # 全テスト実行
 dbt test --select <model名> # 単一モデルのテストのみ実行
 dbt compile                # SQLのコンパイルのみ(実行なし)
@@ -33,7 +33,7 @@ dbt clean                  # target/ と dbt_packages/ を削除
 
 ## 構成
 
-- `models/` — dbtモデル(SQL)。`dbt_project.yml` の設定により `models/example/` 配下はviewとしてマテリアライズされる。モデルのテスト・ドキュメントは同ディレクトリの `schema.yml` に定義する。
+- `models/` — dbtモデル(SQL)を配置するディレクトリ(現状は空)。モデルのテスト・ドキュメントは同ディレクトリの `schema.yml` に定義する。
 - `seeds/` — `dbt seed` でロードするCSV。
 - `macros/` / `snapshots/` / `analyses/` / `tests/` — dbt標準のディレクトリ構成(現状は空)。
 - `dbt_project.yml` の `profile:` 名は `~/.dbt/profiles.yml` のプロファイル名と一致している必要がある。
