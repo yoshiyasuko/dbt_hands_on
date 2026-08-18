@@ -10,3 +10,5 @@ sources:
         description: '注文データ'
       - name: order_items
         description: '注文詳細データ'
+      - name: events
+        description: 'イベントデータ'
