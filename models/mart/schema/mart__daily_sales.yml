@@ -1,0 +1,17 @@
+version: 2
+
+models:
+  - name: mart__daily_sales
+    description: 日次売上
+    columns:
+      - name: date
+        description: 売上日
+        data_tests:
+          - not_null
+          - unique
+      - name: sales
+        description: 売上金額合計（日本円）
+      - name: payment_uu
+        description: 購入ユーザー数
+      - name: arppu
+        description: 1ユーザーあたりの平均売上金額（日本円）
