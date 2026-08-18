@@ -1,0 +1,32 @@
+version: 2
+
+models:
+  - name: stg__events
+    description: 'イベントデータ'
+    columns:
+      - name: id
+        description: 'イベントID'
+      - name: user_id
+        description: 'ユーザーID'
+      - name: sequence_number
+        description: 'セッション内のイベント連番'
+      - name: session_id
+        description: 'セッションID'
+      - name: created_at
+        description: 'イベント発生日時(UTC)'
+      - name: ip_address
+        description: 'IPアドレス'
+      - name: city
+        description: '市区町村'
+      - name: state
+        description: '州・都道府県'
+      - name: postal_code
+        description: '郵便番号'
+      - name: browser
+        description: 'ブラウザ'
+      - name: traffic_source
+        description: '流入元'
+      - name: uri
+        description: 'アクセスされたURI'
+      - name: event_type
+        description: 'イベント種別'
