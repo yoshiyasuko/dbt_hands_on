@@ -1,0 +1,18 @@
+version: 2
+
+models:
+  - name: int__cleansed_orders
+    description: クレンジングした注文データ
+    columns:
+      - name: order_id
+        description: 注文ID
+      - name: user_id
+        description: ユーザーID
+      - name: order_time_jst
+        description: 注文日時
+      - name: product_id
+        description: 商品ID
+      - name: inventory_item_id
+        description: 在庫アイテムID
+      - name: sales_jpy
+        description: 売上金額（日本円）
