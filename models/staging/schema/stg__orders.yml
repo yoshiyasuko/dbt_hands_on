@@ -16,3 +16,16 @@ models:
     description: '注文データ'
   - name: stg__order_items
     description: '注文詳細データ'
+    columns:
+      - name: status
+        description: '注文詳細のステータス'
+        data_tests:
+          - not_null
+          - accepted_values:
+              arguments:
+                values:
+                  - "Shipped"
+                  - "Complete"
+                  - "Processing"
+                  - "Cancelled"
+                  - "Returned"
