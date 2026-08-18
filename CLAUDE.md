@@ -34,8 +34,11 @@ dbt clean                  # target/ と dbt_packages/ を削除
 ## 構成
 
 - `models/staging/` — staging層のモデル(SQL)。BigQuery公開データセット `bigquery-public-data.thelook_ecommerce` をsourceとして参照し、`dbt_project.yml` の設定によりviewとしてマテリアライズされる。source・モデルの定義(テスト・ドキュメント)は `models/staging/schema/` 配下のYAMLに記述する。
+- `models/intermediate/` — intermediate層のモデル(SQL)。stagingモデルをJOIN・クレンジングする。`int__cleansed_orders` はモデル内 `config()` でパーティション(`order_time_jst` 日単位)・クラスタリング(`user_id`)付きのtableとしてビルドされる。
+- `macros/` — プロジェクト共通マクロ。`generate_alias_name` の上書きにより、`int__` / `mart__` prefixのモデルはBigQuery上ではprefixを除いた物理テーブル名になる(例: `int__cleansed_orders` → `cleansed_orders`)。`ref()` ではモデル名(prefix付き)を使う。
+- `analyses/` — `dbt run` の対象にならないアドホック分析クエリ置き場。`dbt compile` でSQLに展開して実行する。
 - `docs/` — `{{ doc(...) }}` で参照するdocブロック(Markdown)の置き場。`dbt_project.yml` の `docs-paths` で指定されている。
 - `seeds/` — `dbt seed` でロードするCSV。
-- `macros/` / `snapshots/` / `analyses/` / `tests/` — dbt標準のディレクトリ構成(現状は空)。
+- `snapshots/` / `tests/` — dbt標準のディレクトリ構成(現状は空)。
 - `dbt_project.yml` の `profile:` 名は `~/.dbt/profiles.yml` のプロファイル名と一致している必要がある。
 - `.agents/skills/` — プロジェクトスキルの本体(複数AIエージェント共用のuniversal形式)。`.claude/skills/` からsymlinkされており、Claude Codeはそちら経由で読み込む。利用可能なスキル: `update-docs`(README.md/CLAUDE.mdの更新判断・整合性検証)、`find-skills`(スキル検索)、`skill-creator`(スキル作成支援)。ルートの `skills-lock.json` はスキルのバージョン管理用ロックファイル。
