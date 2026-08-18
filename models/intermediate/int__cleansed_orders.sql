@@ -14,7 +14,7 @@ select
     datetime(orders.created_at, "Asia/Tokyo") as order_time_jst,
     order_items.product_id,
     order_items.inventory_item_id,
-    order_items.sale_price * 150 as sales_jpy
+    cast(round(order_items.sale_price * 150) as int) as sales_jpy
 from {{ ref("stg__orders") }} as orders
 join {{ ref("stg__order_items") }} as order_items
 using (order_id)
