@@ -16,3 +16,11 @@ models:
         description: 在庫アイテムID
       - name: sales_jpy
         description: 売上金額（日本円）
+      - name: product_category
+        description: 商品カテゴリ
+      - name: product_name
+        description: 商品名
+      - name: product_brand
+        description: 商品ブランド
+      - name: product_department
+        description: 商品部門
