@@ -1,0 +1,27 @@
+version: 2
+
+models:
+  - name: int__daily_registered_user_types
+    description: 日次ユーザータイプ
+    columns:
+      - name: user_id
+        description: ユーザーID
+        data_type: INT64
+      - name: date
+        description: 日付
+        data_type: DATE
+      - name: user_type
+        description: ユーザータイプ
+        data_type: STRING
+      - name: d1_access_flg
+        description: 1日後アクセスフラグ
+        data_type: INT64
+      - name: d1_3_access_flg
+        description: 1～3日後アクセスフラグ
+        data_type: INT64
+      - name: d1_7_access_flg
+        description: 1～7日後アクセスフラグ
+        data_type: INT64
+      - name: d1_14_access_flg
+        description: 1～14日後アクセスフラグ
+        data_type: INT64
