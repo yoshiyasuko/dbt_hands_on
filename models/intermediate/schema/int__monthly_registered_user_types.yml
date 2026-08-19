@@ -1,0 +1,15 @@
+version: 2
+
+models:
+  - name: int__monthly_registered_user_types
+    description: 月次ユーザータイプ
+    columns:
+      - name: user_id
+        description: ユーザーID
+        data_type: INT64
+      - name: month
+        description: 月
+        data_type: DATE
+      - name: user_type
+        description: ユーザータイプ
+        data_type: STRING
