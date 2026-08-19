@@ -1,0 +1,5 @@
+version: 2
+
+models:
+  - name: stg__products
+    description: '商品データ'
