@@ -31,6 +31,9 @@ models:
     # models/staging/ 配下(thelook_ecommerceソースのstagingモデル)はviewとしてビルドする
     staging:
       +materialized: view
+    # models/intermediate/ 配下(中間モデル)はtableとしてビルドする
+    intermediate:
+      +materialized: table
     # models/mart/ 配下(分析用の最終成果物)はtableとしてビルドする
     mart:
       +materialized: table
