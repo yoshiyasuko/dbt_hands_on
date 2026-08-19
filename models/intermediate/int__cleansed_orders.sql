@@ -34,6 +34,6 @@ select
 from orders
 join order_items
 using (order_id)
-join products
+left join products
 on order_items.product_id = products.id
 where orders.status not in ('Cancelled', 'Returned')
