@@ -1,0 +1,24 @@
+version: 2
+
+models:
+  - name: mart__monthly_department_brand_sales
+    description: 月次部門別ブランド売上
+    columns:
+      - name: month
+        description: 月
+        data_type: DATE
+      - name: user_type
+        description: ユーザータイプ
+        data_type: STRING
+      - name: department
+        description: 部門名
+        data_type: STRING
+      - name: brand
+        description: ブランド名
+        data_type: STRING
+      - name: sales
+        description: 売上
+        data_type: FLOAT64
+      - name: payment_uu
+        description: 購入UU
+        data_type: INT64
