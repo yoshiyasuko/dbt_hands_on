@@ -1,0 +1,27 @@
+version: 2
+
+models:
+  - name: int__daily_user_sales
+    description: 日次ユーザー売上
+    columns:
+      - name: user_id
+        description: ユーザーID
+        data_type: INT64
+      - name: date
+        description: 日付
+        data_type: DATE
+      - name: sales
+        description: 売上
+        data_type: FLOAT64
+      - name: past_d30_sales
+        description: 過去30日間売上
+        data_type: FLOAT64
+      - name: past_all_sales
+        description: 過去累計売上
+        data_type: FLOAT64
+      - name: past_d30_payment_segment
+        description: 30日間課金セグメント
+        data_type: STRING
+      - name: payment_experience_flg
+        description: 課金経験フラグ
+        data_type: INT64
