@@ -5,6 +5,13 @@ sources:
     database: bigquery-public-data
     schema: thelook_ecommerce
     description: '{{ doc("thelook_ecommerce") }}'
+    # created_at基準のクエリベース鮮度チェック(filterでスキャン範囲を直近3日に限定)
+    config:
+      loaded_at_field: created_at
+      freshness:
+        warn_after: {count: 24, period: hour}
+        error_after: {count: 48, period: hour}
+        filter: date(created_at, "+9") >= current_date("+9") - 3
     tables:
       - name: orders
         description: '注文データ'
@@ -14,3 +21,6 @@ sources:
         description: 'イベントデータ'
       - name: products
         description: '商品データ'
+        # productsはcreated_atを持たないマスタのため鮮度チェック対象外
+        config:
+          freshness: null

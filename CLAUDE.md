@@ -22,6 +22,7 @@ dbt run --select <model名>  # 単一モデルのみ実行
 dbt test                   # 全テスト実行
 dbt test --select <model名> # 単一モデルのテストのみ実行
 dbt compile                # SQLのコンパイルのみ(実行なし)
+dbt source freshness       # ソースの鮮度チェック(products以外のthelook各テーブル)
 dbt clean                  # target/ と dbt_packages/ を削除
 ```
 
