@@ -39,6 +39,7 @@ dbt clean                  # target/ と dbt_packages/ を削除
 - `macros/` — プロジェクト共通マクロ。`generate_alias_name` の上書きにより、`int__` / `mart__` prefixのモデルはBigQuery上ではprefixを除いた物理テーブル名になる(例: `int__cleansed_orders` → `cleansed_orders`)。`ref()` ではモデル名(prefix付き)を使う。
 - `analyses/` — `dbt run` の対象にならないアドホック分析クエリ置き場。`dbt compile` でSQLに展開して実行する。
 - `docs/` — `{{ doc(...) }}` で参照するdocブロック(Markdown)の置き場。`dbt_project.yml` の `docs-paths` で指定されている。
+- `notes/` — 開発知見のメモ置き場(dbtの管理対象外)。集計モデル設計の手順は `notes/aggregation-model-recipe.md` を参照。
 - `seeds/` — `dbt seed` でロードするCSV。
 - `snapshots/` / `tests/` — dbt標準のディレクトリ構成(現状は空)。
 - `dbt_project.yml` の `profile:` 名は `~/.dbt/profiles.yml` のプロファイル名と一致している必要がある。
