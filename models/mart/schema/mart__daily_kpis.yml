@@ -1,0 +1,41 @@
+version: 2
+
+models:
+  - name: mart__daily_kpis
+    description: 日次KPI
+    columns:
+      - name: date
+        description: 日付
+        data_type: DATE
+        data_tests:
+          - not_null
+      - name: detail_user_type
+        description: 詳細ユーザータイプ
+        data_type: STRING
+      - name: past_d30_payment_segment
+        description: 30日間課金セグメント
+        data_type: STRING
+      - name: dau
+        description: DAU
+        data_type: INT64
+      - name: new_uu
+        description: 新規UU
+        data_type: INT64
+      - name: d1_access_uu
+        description: 1日後アクセスUU
+        data_type: INT64
+      - name: d1_3_access_uu
+        description: 1～3日後アクセスUU
+        data_type: INT64
+      - name: d1_7_access_uu
+        description: 1～7日後アクセスUU
+        data_type: INT64
+      - name: d1_14_access_uu
+        description: 1～14日後アクセスUU
+        data_type: INT64
+      - name: payment_uu
+        description: 購入UU
+        data_type: INT64
+      - name: sales
+        description: 売上
+        data_type: FLOAT64
