@@ -8,7 +8,9 @@ models:
         description: 日付
         data_type: DATE
         data_tests:
-          - not_null
+          - not_null:
+              config:
+                where: "date >= date_sub(current_date('Asia/Tokyo'), interval 7 day)"
       - name: detail_user_type
         description: 詳細ユーザータイプ
         data_type: STRING
