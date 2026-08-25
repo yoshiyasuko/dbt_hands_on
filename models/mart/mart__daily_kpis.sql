@@ -8,6 +8,17 @@
     -- int__daily_registered_user_types（ユーザータイプ・アクセスフラグ）
     -- int__daily_user_sales（ユーザーの売上）
 
+{{
+    config(
+        materialized="incremental",
+        incremental_strategy="insert_overwrite",
+        partition_by={
+            "field": "date",
+            "data_type": "date",
+        }
+    )
+}}
+
 -- 参照モデル定義
 with daily_registered_user_types as (
     select * from {{ ref("int__daily_registered_user_types") }}
@@ -59,4 +70,7 @@ select
     count(distinct if(sales > 0, user_id, null)) as payment_uu,
     sum(sales) as sales
 from user_days
+{% if is_incremental() %}
+where date >= date_sub(current_date("Asia/Tokyo"), interval 6 day)
+{% endif %}
 group by date, detail_user_type, past_d30_payment_segment

@@ -1,3 +1,16 @@
+-- パーティションは「月」単位で分割
+{{
+    config(
+        materialized="incremental",
+        incremental_strategy="insert_overwrite",
+        partition_by={
+            "field": "month",
+            "data_type": "date",
+            "granularity": "month"
+        }
+    )
+}}
+
 -- 参照モデル定義
 with cleansed_orders as (
     select * from {{ ref("int__cleansed_orders") }}
@@ -17,7 +30,12 @@ orders_with_month_and_user_type as (
         cleansed_orders.sales_jpy
     from cleansed_orders
     join monthly_registered_user_types
-    on cleansed_orders.user_id = monthly_registered_user_types.user_id and date_trunc(date(cleansed_orders.order_time_jst), month) = monthly_registered_user_types.month
+        on cleansed_orders.user_id = monthly_registered_user_types.user_id
+        and date_trunc(date(cleansed_orders.order_time_jst), month) = monthly_registered_user_types.month
+    -- インクリメンタル処理: 直近7日分のデータを含む月のデータ全て対象にし、月単位での差し替えを行う
+    {% if is_incremental() %}
+    where date(cleansed_orders.order_time_jst) >= date_trunc(date_sub(current_date("Asia/Tokyo"), interval 6 day), month)
+    {% endif %}
 ),
 
 -- ブランド「その他」判定用に「月・部門・ブランド」のUUを集計
