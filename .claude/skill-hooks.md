@@ -7,3 +7,4 @@
 | フック | スキル | 説明 |
 |-------|-------|------|
 | pre-commit | update-docs | コミット前にドキュメント更新要否を確認 |
+| pre-commit | update-model-catalog | コミット前にモデルカタログ(notes/model-catalog.md)の更新要否を確認 |
