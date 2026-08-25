@@ -20,6 +20,19 @@ ecommerce_dbt_bootcamp(このリポジトリ)で作成したテーブルを元�
 - 処理容量はdbtログの `xx processed` や BigQueryコンソールのジョブ履歴で確認
 - **冪等性の確認**(繰り返し実行で行が増えない/欠けない)は、実行→件数記録→再実行→件数比較。insert_overwriteはパーティション差し替えなので二重INSERTにならないのがポイント(merge戦略との違い)
 
+**月次グレインのモデル(mart__monthly_department_brand_sales)の注意**
+- 「直近7日」をそのままWHEREに書けるのは、フィルタ窓とパーティション粒度が一致する日次モデルだけ。insert_overwriteはパーティションを丸ごと差し替えるため、SELECTは**そのパーティションの完全な中身**を返す必要がある
+- 7日フィルタのままだと当月パーティションが「直近7日分だけで集計した月」に置き換わり、月合計と「その他」ブランド判定(UU10人未満)が過少になる。実行は成功し、繰り返し実行しても同じ結果になる(**冪等だが誤り**)ため、冪等性チェックでは検出できない
+- 正しい読み替えは「直近7日に注文が入った月を、月ごと丸ごと再計算」:
+  ```sql
+  -- partition_by は {"field": "month", "data_type": "date", "granularity": "month"}
+  {% if is_incremental() %}
+  where date(order_time_jst) >= date_trunc(date_sub(current_date('Asia/Tokyo'), interval 7 day), month)
+  {% endif %}
+  ```
+  月初1〜7日の実行では窓が月境界をまたぎ、前月も自動的に再計算対象になる
+- 一般則: **洗い替えのフィルタ窓は「新データが影響するパーティションの完全な中身を作れる範囲」まで広げる**。1-9(lookback)と同じ構図で、影響範囲が月単位なら月まで広げれば成立し、全履歴・未来に及ぶなら不向きとなる
+
 **1-8. int__cleansed_ordersで処理容量が減らない理由(考察問題)**
 - ヒント: incrementalで減るのは「**読む側のスキャン量**」ではなく、WHEREで絞った結果を書く量。読む側のスキャン量が減るのは**上流がパーティションテーブルでプルーニングが効く場合だけ**
 - mart__daily_salesの上流(cleansed_orders)はorder_time_jstパーティション済み → 絞れば読みも減る
