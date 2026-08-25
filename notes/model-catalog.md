@@ -3,7 +3,7 @@
 全11モデルのカラム・内容・型の一覧。型はBigQueryの `INFORMATION_SCHEMA.COLUMNS` から取得した**実際の型**(2026-08-25時点)。
 
 - 物理名ルール: `int__` / `mart__` prefixのモデルは、`generate_alias_name` マクロによりBigQuery上ではprefixを除いた物理名になる(例: `int__cleansed_orders` → `cleansed_orders`)。`ref()` ではモデル名(prefix付き)を使う
-- マテリアライズ: staging=view / intermediate=table / mart=table(`dbt_project.yml` の層設定)
+- マテリアライズ: staging=view / intermediate=table / mart=table(`dbt_project.yml` の層設定)。ただし `int__cleansed_orders` と全martモデルはモデル内 `config()` でincremental(insert_overwrite)に上書きされている(洗い替え窓は各セクション参照)
 
 ## 依存関係の全体像
 
@@ -99,7 +99,7 @@ BigQuery公開データセット `bigquery-public-data.thelook_ecommerce` を `s
 ### int__cleansed_orders(物理名: cleansed_orders)— クレンジング済み注文明細
 
 グレイン: 1行 = 1注文明細。orders × order_items(INNER JOIN)⟕ products。キャンセル・返品(`status in ('Cancelled', 'Returned')`)を除外。
-設定: `order_time_jst` で日単位パーティション、`user_id` でクラスタリング。
+設定: `order_time_jst` で日単位パーティション、`user_id` でクラスタリング。incremental(insert_overwrite)で直近7日(JST・当日含む)の日パーティションを洗い替え。
 
 | カラム | 型 | 内容 |
 |---|---|---|
@@ -159,6 +159,7 @@ BigQuery公開データセット `bigquery-public-data.thelook_ecommerce` を `s
 ### mart__daily_sales(物理名: daily_sales)— 日次売上
 
 グレイン: 1行 = 日付(`date` にunique・not_nullテストあり)。int__cleansed_ordersを日次集計。
+設定: `date` で日単位パーティション。incremental(insert_overwrite)で直近7日(当日含む)を洗い替え。
 
 | カラム | 型 | 内容 |
 |---|---|---|
@@ -170,6 +171,7 @@ BigQuery公開データセット `bigquery-public-data.thelook_ecommerce` を `s
 ### mart__daily_kpis(物理名: daily_kpis)— 日次KPI
 
 グレイン: 1行 = 日付 × 詳細ユーザータイプ × 30日間課金セグメント(複合グレイン。`date` 単独では一意でない)。材料はユーザー×日(int__daily_registered_user_types ⟕ int__daily_user_sales)。`date` のnot_nullテストは直近7日のみ対象(where config)。
+設定: `date` で日単位パーティション。incremental(insert_overwrite)で直近7日(当日含む)を洗い替え。
 
 | カラム | 型 | 内容 |
 |---|---|---|
@@ -188,6 +190,7 @@ BigQuery公開データセット `bigquery-public-data.thelook_ecommerce` を `s
 ### mart__monthly_department_brand_sales(物理名: monthly_department_brand_sales)— 月次部門別ブランド売上
 
 グレイン: 1行 = 月 × ユーザータイプ × 部門 × ブランド。注文明細に月・ユーザータイプを付与(INNER JOIN)し、月×部門×ブランドの購入UUが10人未満のブランドは「その他」に付け替えてから集計。
+設定: `month` で月単位パーティション。incremental(insert_overwrite)で「直近7日を含む月」を月初から丸ごと洗い替え。
 
 | カラム | 型 | 内容 |
 |---|---|---|

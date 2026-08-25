@@ -35,8 +35,8 @@ dbt clean                  # target/ と dbt_packages/ を削除
 ## 構成
 
 - `models/staging/` — staging層のモデル(SQL)。BigQuery公開データセット `bigquery-public-data.thelook_ecommerce` をsourceとして参照し、`dbt_project.yml` の設定によりviewとしてマテリアライズされる。source・モデルの定義(テスト・ドキュメント)は `models/staging/schema/` 配下のYAMLに記述する。source定義は `_<source名>__sources.yml`(例: `_thelook__sources.yml`)、モデル定義は1モデル1ファイル(例: `stg__orders.yml`)に分割する。
-- `models/intermediate/` — intermediate層のモデル(SQL)。stagingモデルをJOIN・クレンジング・分類する。`dbt_project.yml` の設定により層全体がtableとしてマテリアライズされる。パーティションやクラスタリングが必要なモデルは、`int__cleansed_orders` のようにモデル内 `config()` で個別に追加する。
-- `models/mart/` — mart層のモデル(SQL)。BIや分析から直接参照される最終成果物で、`dbt_project.yml` の設定によりtableとしてマテリアライズされる(物理名はprefixなし。例: `mart__daily_sales` → `daily_sales`)。
+- `models/intermediate/` — intermediate層のモデル(SQL)。stagingモデルをJOIN・クレンジング・分類する。`dbt_project.yml` の設定により層全体がtableとしてマテリアライズされる。パーティションやクラスタリングが必要なモデルは、`int__cleansed_orders` のようにモデル内 `config()` で個別に追加する。`int__cleansed_orders` は `config()` によりincremental(insert_overwrite・直近7日洗い替え)に上書きされている。
+- `models/mart/` — mart層のモデル(SQL)。BIや分析から直接参照される最終成果物で、`dbt_project.yml` の設定によりtableとしてマテリアライズされる(物理名はprefixなし。例: `mart__daily_sales` → `daily_sales`)。全martモデルはモデル内 `config()` によりincremental(insert_overwrite)に上書きされている。
 - `macros/` — プロジェクト共通マクロ。`generate_alias_name` の上書きにより、`int__` / `mart__` prefixのモデルはBigQuery上ではprefixを除いた物理テーブル名になる(例: `int__cleansed_orders` → `cleansed_orders`)。`ref()` ではモデル名(prefix付き)を使う。
 - `analyses/` — `dbt run` の対象にならないアドホック分析クエリ置き場。`dbt compile` でSQLに展開して実行する。
 - `docs/` — `{{ doc(...) }}` で参照するdocブロック(Markdown)の置き場。`dbt_project.yml` の `docs-paths` で指定されている。
