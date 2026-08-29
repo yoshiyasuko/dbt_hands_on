@@ -1,0 +1,54 @@
+version: 2
+
+models:
+  - name: stg__users
+    description: ユーザーデータ
+    columns:
+      - name: id
+        description: ユーザーID
+        data_type: INT64
+      - name: first_name
+        description: 名
+        data_type: STRING
+      - name: last_name
+        description: 姓
+        data_type: STRING
+      - name: email
+        description: メールアドレス
+        data_type: STRING
+      - name: age
+        description: 年齢
+        data_type: INT64
+      - name: gender
+        description: 性別
+        data_type: STRING
+      - name: state
+        description: 州・都道府県
+        data_type: STRING
+      - name: street_address
+        description: 住所
+        data_type: STRING
+      - name: postal_code
+        description: 郵便番号
+        data_type: STRING
+      - name: city
+        description: 市区町村
+        data_type: STRING
+      - name: country
+        description: 国
+        data_type: STRING
+      - name: latitude
+        description: 緯度
+        data_type: FLOAT64
+      - name: longitude
+        description: 経度
+        data_type: FLOAT64
+      - name: traffic_source
+        description: 流入元
+        data_type: STRING
+      - name: created_at
+        description: 作成日時
+        data_type: TIMESTAMP
+      - name: user_geom
+        description: ユーザーの位置情報（ジオメトリ）
+        data_type: GEOGRAPHY
