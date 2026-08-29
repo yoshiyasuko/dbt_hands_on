@@ -1,0 +1,33 @@
+version: 2
+
+models:
+  - name: mart__monthly_kpis
+    description: 月次KPI
+    columns:
+      - name: month
+        description: 月
+        data_type: DATE
+      - name: country
+        description: 国
+        data_type: STRING
+      - name: mau
+        description: MAU
+        data_type: INT64
+      - name: sales
+        description: 売上
+        data_type: FLOAT64
+      - name: payment_uu
+        description: 購入UU
+        data_type: INT64
+      - name: arppu
+        description: ARPPU
+        data_type: FLOAT64
+      - name: sales_q1
+        description: 購入金額第1四分位数
+        data_type: FLOAT64
+      - name: sales_q2
+        description: 購入金額第2四分位数（中央値）
+        data_type: FLOAT64
+      - name: sales_q3
+        description: 購入金額第3四分位数
+        data_type: FLOAT64

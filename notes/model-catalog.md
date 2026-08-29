@@ -1,6 +1,6 @@
 # モデルカタログ
 
-全11モデルのカラム・内容・型の一覧。型はBigQueryの `INFORMATION_SCHEMA.COLUMNS` から取得した**実際の型**(2026-08-25時点)。
+全13モデルのカラム・内容・型の一覧。型はBigQueryの `INFORMATION_SCHEMA.COLUMNS` から取得した**実際の型**(2026-08-25時点)。
 
 - 物理名ルール: `int__` / `mart__` prefixのモデルは、`generate_alias_name` マクロによりBigQuery上ではprefixを除いた物理名になる(例: `int__cleansed_orders` → `cleansed_orders`)。`ref()` ではモデル名(prefix付き)を使う
 - マテリアライズ: staging=view / intermediate=table / mart=table(`dbt_project.yml` の層設定)。ただし `int__cleansed_orders` と全martモデルはモデル内 `config()` でincremental(insert_overwrite)に上書きされている(洗い替え窓は各セクション参照)
@@ -8,12 +8,13 @@
 ## 依存関係の全体像
 
 ```
-sources(thelook_ecommerce): orders, order_items, events, products
+sources(thelook_ecommerce): orders, order_items, events, products, users
   ├─ stg__orders ──┐
   ├─ stg__order_items ─┼─ int__cleansed_orders ─┬─ mart__daily_sales
   ├─ stg__products ──┘                          ├─ int__daily_user_sales ─┐
-  └─ stg__events ── int__daily_registered_user_types ─┬──────────────────┴─ mart__daily_kpis
-                                                      └─ int__monthly_registered_user_types ─(+ int__cleansed_orders)─ mart__monthly_department_brand_sales
+  ├─ stg__events ── int__daily_registered_user_types ─┬──────────────────┼─ mart__daily_kpis
+  │                                                   └─ int__monthly_registered_user_types ─(+ int__cleansed_orders)─ mart__monthly_department_brand_sales
+  └─ stg__users ──────────────(+ int__daily_user_sales)─ mart__monthly_kpis
 ```
 
 ---
@@ -91,6 +92,29 @@ BigQuery公開データセット `bigquery-public-data.thelook_ecommerce` を `s
 | department | STRING | 部門(Men / Women) |
 | sku | STRING | SKUコード |
 | distribution_center_id | INT64 | 配送センターID |
+
+### stg__users — ユーザーデータ
+
+グレイン: 1行 = 1ユーザー(`id` 一意)。ユーザーマスタ(登録情報・属性)。
+
+| カラム | 型 | 内容 |
+|---|---|---|
+| id | INT64 | ユーザーID |
+| first_name | STRING | 名 |
+| last_name | STRING | 姓 |
+| email | STRING | メールアドレス |
+| age | INT64 | 年齢 |
+| gender | STRING | 性別 |
+| state | STRING | 州・都道府県 |
+| street_address | STRING | 住所 |
+| postal_code | STRING | 郵便番号 |
+| city | STRING | 市区町村 |
+| country | STRING | 国 |
+| latitude | FLOAT64 | 緯度 |
+| longitude | FLOAT64 | 経度 |
+| traffic_source | STRING | 流入元 |
+| created_at | TIMESTAMP | ユーザー登録日時(UTC) |
+| user_geom | GEOGRAPHY | ユーザーの位置情報(ジオメトリ) |
 
 ---
 
@@ -200,6 +224,23 @@ BigQuery公開データセット `bigquery-public-data.thelook_ecommerce` を `s
 | brand | STRING | ブランド名(購入UU10人未満は「その他」) |
 | sales | FLOAT64 | 売上(円) |
 | payment_uu | INT64 | 購入UU(distinct) |
+
+### mart__monthly_kpis(物理名: monthly_kpis)— 月次国別KPI
+
+グレイン: 1行 = 月 × 国(国内 / US / その他海外 / 不明)。材料はユーザー×月(int__daily_user_salesを月次集計し、stg__usersの国を付与)。四分位数は**課金者(当月sales > 0)の月次課金額**の分布を `percentile_cont`(月×国パーティション)で算出。
+設定: `month` で月単位パーティション。incremental(insert_overwrite)で「直近7日を含む月」を月初から丸ごと洗い替え。
+
+| カラム | 型 | 内容 |
+|---|---|---|
+| month | DATE | 月(月初日) |
+| country | STRING | 国(国内 / US / その他海外 / 不明) |
+| mau | INT64 | MAU(月内アクセスUU) |
+| sales | FLOAT64 | 売上(円) |
+| payment_uu | INT64 | 課金UU(月内sales > 0のdistinctユーザー数) |
+| arppu | FLOAT64 | ARPPU(sales ÷ payment_uu、小数第1位丸め) |
+| sales_q1 | FLOAT64 | 課金者の月次課金額 第1四分位数(円) |
+| sales_q2 | FLOAT64 | 課金者の月次課金額 第2四分位数=中央値(円) |
+| sales_q3 | FLOAT64 | 課金者の月次課金額 第3四分位数(円) |
 
 ---
 

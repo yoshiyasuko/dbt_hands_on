@@ -24,3 +24,5 @@ sources:
         # productsはcreated_atを持たないマスタのため鮮度チェック対象外
         config:
           freshness: null
+      - name: users
+        description: 'ユーザーデータ'
