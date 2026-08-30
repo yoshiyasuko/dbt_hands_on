@@ -4,6 +4,21 @@ models:
   - name: stg__order_items
     description: '注文詳細データ'
     columns:
+      - name: id
+        description: '注文明細ID'
+        data_type: INT64
+      - name: order_id
+        description: '注文ID（stg__ordersへの参照）'
+        data_type: INT64
+      - name: user_id
+        description: 'ユーザーID'
+        data_type: INT64
+      - name: product_id
+        description: '商品ID（stg__productsへの参照）'
+        data_type: INT64
+      - name: inventory_item_id
+        description: '在庫アイテムID'
+        data_type: INT64
       - name: status
         description: '注文詳細のステータス'
         data_tests:
@@ -16,3 +31,18 @@ models:
                   - "Processing"
                   - "Cancelled"
                   - "Returned"
+      - name: created_at
+        description: '明細作成日時（UTC）'
+        data_type: TIMESTAMP
+      - name: shipped_at
+        description: '発送日時'
+        data_type: TIMESTAMP
+      - name: delivered_at
+        description: '配達完了日時'
+        data_type: TIMESTAMP
+      - name: returned_at
+        description: '返品日時（返品時のみ）'
+        data_type: TIMESTAMP
+      - name: sale_price
+        description: '販売価格（USD）'
+        data_type: FLOAT64
