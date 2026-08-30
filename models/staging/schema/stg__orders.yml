@@ -3,3 +3,31 @@ version: 2
 models:
   - name: stg__orders
     description: '注文データ'
+    columns:
+      - name: order_id
+        description: '注文ID'
+        data_type: INT64
+      - name: user_id
+        description: '注文したユーザーのID'
+        data_type: INT64
+      - name: status
+        description: '注文ステータス（Shipped / Complete / Processing / Cancelled / Returned）'
+        data_type: STRING
+      - name: gender
+        description: '注文者の性別（F / M）'
+        data_type: STRING
+      - name: created_at
+        description: '注文日時（UTC）'
+        data_type: TIMESTAMP
+      - name: returned_at
+        description: '返品日時（返品時のみ）'
+        data_type: TIMESTAMP
+      - name: shipped_at
+        description: '発送日時'
+        data_type: TIMESTAMP
+      - name: delivered_at
+        description: '配達完了日時'
+        data_type: TIMESTAMP
+      - name: num_of_item
+        description: '注文内の商品点数'
+        data_type: INT64
